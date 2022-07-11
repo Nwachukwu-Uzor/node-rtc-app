@@ -4,20 +4,19 @@ import config from "./config/defaults.js";
 import logger from "./src/utils/logger.js";
 import { connectDB } from "./src/database/mongoose.js";
 
+import usersRoute from "./src/routes/users.route.js";
+
 const { port, environment, project } = config;
 const app = express();
 
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors);
+app.use(cors());
 
-// app.listen(port, async () => {
-//   logger.info("connecting to database ...");
-//   await connectDB();
-//   logger.info(`server is listening on port ${port}`);
-// });
-
-app.listen(port, () => {
-  console.log(`server is listening on port ${port}`);
+app.listen(port, async () => {
+  logger.info("connsecting to database ...");
+  await connectDB();
+  logger.info(`server is listening on port ${port}`);
 });
 
 app.get("/", (req, res) => {
@@ -28,3 +27,5 @@ app.get("/", (req, res) => {
     project,
   });
 });
+
+app.use("/accounts", usersRoute);
